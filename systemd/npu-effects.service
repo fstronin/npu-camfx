@@ -1,0 +1,18 @@
+[Unit]
+Description=NpuCamFX virtual camera
+After=graphical-session.target
+PartOf=graphical-session.target
+Conflicts=gc2607-vcam.service
+
+[Service]
+Type=simple
+ExecStartPre=/bin/sh -c 'for i in $(seq 1 50); do [ -e /dev/video60 ] && exit 0; sleep 0.2; done; exit 1'
+ExecStart=%h/.local/bin/npueffectsd
+Environment=GST_PLUGIN_PATH=%h/.local/share/gstreamer-1.0/plugins
+Environment=LD_LIBRARY_PATH=%h/npu-venv/lib/python3.12/site-packages/openvino/libs
+Environment=NPUCAM_MODELS=%h/npu-models
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target

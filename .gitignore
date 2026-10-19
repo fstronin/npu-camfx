@@ -1,0 +1,23 @@
+build/
+models/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.o
+*.so
+*.log
+.DS_Store
+compile_commands.json
+CMakeCache.txt
+CMakeFiles/
+
+# The Ayatana typelib is available from gir1.2-ayatanaappindicator3-0.1.
+# Keep the local copy out of the public repository.
+ui/vendor/*.typelib
+
+# Personal camera stills and screenshots are not distributed.
+docs/evidence/*.jpg
+docs/evidence/*.jpeg
+docs/evidence/*.png
+docs/evidence/*.webp
