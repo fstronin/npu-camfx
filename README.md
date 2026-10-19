@@ -215,7 +215,9 @@ systemctl --user enable --now npu-effects.service npu-effects-ui.service
 
 `install.sh` builds the project in `Release` mode, installs the GStreamer
 plugin, the daemon, the preview tool, the AppIndicator script, and the user
-units. It also runs `systemctl --user daemon-reload`.
+units. It also runs `systemctl --user daemon-reload`. If the user services
+are already running, the installer stops and restarts them; close camera
+applications before upgrading.
 
 If your OpenVINO CMake package is not at the default path, pass it
 explicitly:
