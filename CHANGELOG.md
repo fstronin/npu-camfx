@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add a system-wide Debian package builder (`scripts/build-deb.sh`) that
+  installs binaries, the GStreamer plugin, user units, the WirePlumber
+  rule, the OpenVINO runtime, and model files into FHS locations under
+  `/usr` and `/etc`; add a migration helper for the old per-user install.
+
 - Initial public release as **NpuCamFX** under the MIT license; added an
   American-English README with installation, configuration, and
   troubleshooting instructions.

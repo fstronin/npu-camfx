@@ -1,0 +1,24 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "configure" ]; then
+    cat <<'EOF'
+NpuCamFX has been installed system-wide.
+
+The user services are enabled for future graphical sessions. For the
+current session, run as your desktop user:
+
+    systemctl --user daemon-reload
+    systemctl --user start npu-effects.service npu-effects-ui.service
+
+If you are migrating from the source install, run:
+
+    /usr/share/npu-camfx/migrate-user-install.sh
+
+The helper removes the old files from ~/.local and ~/.config/systemd/user.
+NpuCamFX requires /dev/video60 from v4l2loopback and an Intel NPU driver
+providing /dev/accel/accel0; see /usr/share/doc/npu-camfx/README.Debian.
+EOF
+fi
+
+exit 0

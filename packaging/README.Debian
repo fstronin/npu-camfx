@@ -1,0 +1,72 @@
+NpuCamFX for Debian/Ubuntu
+==========================
+
+This package installs NpuCamFX system-wide:
+
+  /usr/bin/npueffectsd
+  /usr/bin/npucam-preview
+  /usr/bin/npu-effects-indicator
+  /usr/lib/<multiarch>/gstreamer-1.0/libgstnpueffects.so
+  /usr/lib/npu-camfx/openvino/        bundled OpenVINO runtime
+  /usr/lib/systemd/user/              user service units
+  /etc/systemd/user/graphical-session.target.wants/
+  /usr/share/npu-camfx/models/        segmentation and face models
+  /etc/wireplumber/wireplumber.conf.d/60-npu-camfx-hide-libcamera.conf
+
+The package intentionally writes no application files into user home
+directories. The camera stream and previews are runtime data under
+$XDG_RUNTIME_DIR.
+
+Requirements
+------------
+
+- /dev/video60 from v4l2loopback. NpuCamFX does not replace an existing
+  module configuration; install v4l2loopback and make sure the device is
+  available. See /usr/share/doc/npu-camfx/examples/60-npu-camfx.conf.
+- An Intel NPU driver providing /dev/accel/accel0. The OpenVINO NPU
+  plugin is bundled; the kernel driver and firmware are not.
+- A working GStreamer libcamera source (`gstreamer1.0-libcamera`).
+- The `ubuntu-appindicators@ubuntu.com` GNOME extension for the top-bar
+  menu.
+
+Enabling for the current session
+--------------------------------
+
+The units are enabled for future graphical sessions through
+/etc/systemd/user. After installation, load them into the current user
+manager and start them:
+
+  systemctl --user daemon-reload
+  systemctl --user start npu-effects.service npu-effects-ui.service
+
+They will start automatically at the next graphical login.
+
+If you previously used the source install, run the migration helper once
+as your desktop user:
+
+  /usr/share/npu-camfx/migrate-user-install.sh
+
+This removes the old copies from ~/.local and ~/.config/systemd/user and
+starts the packaged units. It does not remove the OpenVINO virtual
+environment or the development model cache.
+
+Configuration
+-------------
+
+The daemon reads models from /usr/share/npu-camfx/models. The bundled
+OpenVINO libraries are private to NpuCamFX and are loaded through the
+unit's LD_LIBRARY_PATH and the binaries' RUNPATH.
+
+The WirePlumber rule hides the raw libcamera source so portal-based
+applications use the virtual camera. It matches the GC2607 node used
+during development; edit the conffile if your camera node has a different
+name.
+
+Removal
+-------
+
+  sudo apt remove npu-camfx
+
+User services stop at logout. The WirePlumber conffile is kept on remove
+and deleted on purge. v4l2loopback, the NPU driver, and any development
+virtual environment are not managed by this package.

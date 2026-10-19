@@ -1,0 +1,13 @@
+[Unit]
+Description=NpuCamFX top-bar control
+After=graphical-session.target npu-effects.service
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/npu-effects-indicator
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target

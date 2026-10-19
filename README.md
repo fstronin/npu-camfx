@@ -279,6 +279,76 @@ For a live frame-rate check:
 ./scripts/verify.sh --fps
 ```
 
+## System-wide Debian package
+
+The source installation puts application files under `~/.local` and
+`~/.config/systemd/user`. For a system-wide installation that keeps all
+application files in `/usr` and `/etc`, build the Debian package:
+
+```bash
+./scripts/build-deb.sh
+sudo apt install ./build/deb/npu-camfx_0.1.0-1_amd64.deb
+```
+
+The package bundles the OpenVINO runtime, the GStreamer plugin, the
+daemon, the preview tool, the AppIndicator script, the model files, the
+system-wide user units, and the WirePlumber rule. OpenVINO and the models
+are installed under:
+
+```text
+/usr/lib/npu-camfx/openvino/
+/usr/share/npu-camfx/models/
+```
+
+The `npu-venv` and `npu-models` directories are only needed to build the
+package and for other NPU tools; the installed NpuCamFX package does not
+read them at run time.
+
+Package layout:
+
+```text
+/usr/bin/npueffectsd
+/usr/bin/npucam-preview
+/usr/bin/npu-effects-indicator
+/usr/lib/<multiarch>/gstreamer-1.0/libgstnpueffects.so
+/usr/lib/npu-camfx/openvino/
+/usr/lib/systemd/user/npu-effects.service
+/usr/lib/systemd/user/npu-effects-ui.service
+/etc/systemd/user/graphical-session.target.wants/npu-effects*.service
+/etc/wireplumber/wireplumber.conf.d/60-npu-camfx-hide-libcamera.conf
+/usr/share/npu-camfx/models/
+/usr/share/doc/npu-camfx/
+```
+
+The user units are enabled for future graphical sessions through
+`/etc/systemd/user`, so they do not need per-user symlinks. After
+installing the package, start them in the current session:
+
+```bash
+systemctl --user daemon-reload
+systemctl --user start npu-effects.service npu-effects-ui.service
+```
+
+If this machine already has the source installation, run the migration
+helper once as your desktop user. It removes the old NpuCamFX copies from
+`~/.local` and `~/.config/systemd/user`, then starts the packaged units:
+
+```bash
+/usr/share/npu-camfx/migrate-user-install.sh
+```
+
+The helper leaves the development OpenVINO environment and model cache in
+place, because other local tools may use them. The package does not create
+application files in user home directories; previews and other runtime
+state stay under `$XDG_RUNTIME_DIR`.
+
+`/dev/video60` from v4l2loopback and the Intel NPU driver are still
+system prerequisites. The package suggests the relevant packages but does
+not replace an existing v4l2loopback configuration.
+
+See `/usr/share/doc/npu-camfx/README.Debian` after installation for the
+package-specific notes.
+
 ## Usage
 
 1. Open Zoom, GNOME Camera, or another application that uses a camera.
@@ -418,6 +488,19 @@ Design documentation:
   no additional authentication.
 
 ## Uninstall
+
+If NpuCamFX was installed from the Debian package:
+
+```bash
+sudo apt remove npu-camfx
+```
+
+The user services stop when the session ends. The WirePlumber
+configuration is kept on remove and deleted on purge; v4l2loopback, the
+NPU driver, and the development virtual environment are not managed by the
+package.
+
+For the source installation:
 
 ```bash
 systemctl --user disable --now npu-effects.service npu-effects-ui.service

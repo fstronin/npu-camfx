@@ -1,0 +1,17 @@
+[Unit]
+Description=NpuCamFX virtual camera
+After=graphical-session.target
+PartOf=graphical-session.target
+Conflicts=gc2607-vcam.service
+
+[Service]
+Type=simple
+ExecStartPre=/bin/sh -c 'for i in $(seq 1 50); do [ -e /dev/video60 ] && exit 0; sleep 0.2; done; exit 1'
+ExecStart=/usr/bin/npueffectsd
+Environment=LD_LIBRARY_PATH=/usr/lib/npu-camfx/openvino
+Environment=NPUCAM_MODELS=/usr/share/npu-camfx/models
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target

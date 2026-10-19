@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
+    cat <<'EOF'
+NpuCamFX has been removed from the system.
+
+Running user services stop when the user session ends. The WirePlumber
+configuration file is kept on remove and deleted on purge. v4l2loopback,
+the Intel NPU driver, and any development virtual environment are not
+managed by this package.
+EOF
+fi
+
+exit 0

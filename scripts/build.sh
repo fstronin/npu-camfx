@@ -2,20 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-if [[ -z "${OPENVINO_DIR:-}" ]]; then
-    for py in "$HOME/npu-venv/bin/python" python3.12 python3; do
-        if ! command -v "$py" >/dev/null 2>&1; then
-            continue
-        fi
-        OPENVINO_DIR="$("$py" -c \
-            'import openvino, os; print(os.path.join(os.path.dirname(openvino.__file__), "cmake"))' \
-            2>/dev/null || true)"
-        if [[ -n "$OPENVINO_DIR" ]]; then
-            break
-        fi
-    done
-fi
-OPENVINO_DIR="${OPENVINO_DIR:-$HOME/npu-venv/lib/python3.12/site-packages/openvino/cmake}"
+OPENVINO_DIR="$("$PWD/scripts/openvino-dir.sh")"
 
 if [[ ! -d "$OPENVINO_DIR" ]]; then
     echo "OpenVINO CMake package not found: $OPENVINO_DIR" >&2
