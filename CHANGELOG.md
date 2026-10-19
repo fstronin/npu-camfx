@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Fix periodic blur FPS drops: the indicator refreshed four previews every
+  5 seconds synchronously through the same `EffectProcessor` as live video,
+  blocking the streaming thread. Previews now generate only on camera
+  activation, menu open, mode/strength change, or explicit refresh, at
+  320 px. Measured blur v4l2: 24.1 fps with the old periodic refresh;
+  29.9 fps after the fix. Off mode remains 29.9 fps.
+
 - Add a system-wide Debian package builder (`scripts/build-deb.sh`) that
   installs binaries, the GStreamer plugin, user units, the WirePlumber
   rule, the OpenVINO runtime, and model files into FHS locations under

@@ -287,7 +287,7 @@ application files in `/usr` and `/etc`, build the Debian package:
 
 ```bash
 ./scripts/build-deb.sh
-sudo apt install ./build/deb/npu-camfx_0.1.0-1_amd64.deb
+sudo apt install ./build/deb/npu-camfx_*.deb
 ```
 
 The package bundles the OpenVINO runtime, the GStreamer plugin, the
@@ -360,6 +360,11 @@ package-specific notes.
 5. Use the large-preview window to compare all four modes side by side.
 6. The icon and the camera LED disappear after the last application closes
    the camera.
+
+Menu previews are generated on demand: when the camera starts, the menu
+opens, the mode or strength changes, or `RefreshPreviews` is called. They
+are not refreshed on a timer, so preview rendering does not steal time from
+the live blur pipeline.
 
 The current AppIndicator menu labels are in Russian. The stable mode
 identifiers used by the D-Bus API and scripts are `off`, `blur`, `beauty`,

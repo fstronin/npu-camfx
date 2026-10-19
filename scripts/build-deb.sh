@@ -3,7 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 PKG="npu-camfx"
-VERSION="${VERSION:-0.1.0-1}"
+VERSION="${VERSION:-0.1.0-2}"
 ARCH="$(dpkg-architecture -qDEB_HOST_ARCH)"
 MULTIARCH="$(dpkg-architecture -qDEB_HOST_MULTIARCH)"
 BUILD_DIR="$PWD/build/deb-build"

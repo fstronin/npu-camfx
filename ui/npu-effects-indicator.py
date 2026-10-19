@@ -53,7 +53,6 @@ class Indicator:
         self.shown = False
         self.items = {}
         self.preview_paths = {}
-        self.ticks = 0
         self.window = None
         self.window_images = {}
         self.strength_items = {}
@@ -164,7 +163,6 @@ class Indicator:
         self.window_images = {}
 
     def _poll(self):
-        self.ticks += 1
         was_active = self.active
         try:
             result = self.proxy.call_sync(
@@ -179,7 +177,6 @@ class Indicator:
             self.smooth = smooth
             self._apply_strength(smooth)
             if active and not was_active:
-                self.ticks = 0
                 self._refresh_previews()
             if active and not self.shown:
                 self.indicator.set_status(
@@ -194,8 +191,6 @@ class Indicator:
                 self.indicator.set_status(
                     AppIndicator.IndicatorStatus.PASSIVE)
                 self.shown = False
-        if self.active and self.ticks and self.ticks % 5 == 0:
-            self._refresh_previews()
         return GLib.SOURCE_CONTINUE
 
     def _apply_mode(self, mode):

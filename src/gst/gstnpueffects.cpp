@@ -299,7 +299,10 @@ GVariant* gst_npu_effects_generate_previews(GstNpuEffects* self,
     g_mkdir_with_parents(dir, 0700);
     npucam::domain::ImageView view{pixels.data(), width, height, stride};
     npucam::preview::PreviewGenerator generator(*impl->processor, dir);
-    const auto paths = generator.generate(view, settings);
+    // The menu thumbnails are 160x90 and the large window is 320x180.
+    // Processing four modes at 320 px wide is enough and keeps the
+    // synchronous D-Bus preview request short while the camera is live.
+    const auto paths = generator.generate(view, settings, 320);
 
     GVariantBuilder builder;
     g_variant_builder_init(&builder, G_VARIANT_TYPE("a{ss}"));
