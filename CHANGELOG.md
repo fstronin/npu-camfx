@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add `EXTRA_DEPENDS` to the Debian package builder. The local install
+  uses it to declare `v4l2-relayd` and `gc2607-camera-stack` as explicit
+  dependencies, so apt keeps the v4l2loopback module-load configuration and
+  the GC2607 libcamera tuning installed.
+
 - Fix periodic blur FPS drops: the indicator refreshed four previews every
   5 seconds synchronously through the same `EffectProcessor` as live video,
   blocking the streaming thread. Previews now generate only on camera

@@ -290,6 +290,18 @@ application files in `/usr` and `/etc`, build the Debian package:
 sudo apt install ./build/deb/npu-camfx_*.deb
 ```
 
+If the virtual camera module and camera tuning come from local packages,
+mark them as explicit dependencies so `apt` keeps them:
+
+```bash
+EXTRA_DEPENDS="v4l2-relayd, gc2607-camera-stack" ./scripts/build-deb.sh
+sudo apt install ./build/deb/npu-camfx_*.deb
+```
+
+With that build, `apt remove` of either local package also removes
+`npu-camfx` instead of leaving a broken virtual camera; `apt autoremove`
+does not drop them.
+
 The package bundles the OpenVINO runtime, the GStreamer plugin, the
 daemon, the preview tool, the AppIndicator script, the model files, the
 system-wide user units, and the WirePlumber rule. OpenVINO and the models

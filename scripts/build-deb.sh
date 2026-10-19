@@ -3,7 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 PKG="npu-camfx"
-VERSION="${VERSION:-0.1.0-2}"
+VERSION="${VERSION:-0.1.0-3}"
 ARCH="$(dpkg-architecture -qDEB_HOST_ARCH)"
 MULTIARCH="$(dpkg-architecture -qDEB_HOST_MULTIARCH)"
 BUILD_DIR="$PWD/build/deb-build"
@@ -160,6 +160,9 @@ printf '%s\n' "/etc/wireplumber/wireplumber.conf.d/60-npu-camfx-hide-libcamera.c
 
 INSTALLED_SIZE="$(du -sk "$ROOT/usr" | cut -f1)"
 DEPENDS="libc6, libgcc-s1, libstdc++6, libglib2.0-0t64, libgstreamer1.0-0, libgstreamer-plugins-base1.0-0, libopencv-core410, libopencv-imgproc410, libopencv-imgcodecs410, libze1, libgomp1, libnuma1, libtbb12, python3, python3-gi, gir1.2-gtk-3.0, gir1.2-ayatanaappindicator3-0.1, libayatana-appindicator3-1, gstreamer1.0-libcamera, gstreamer1.0-plugins-base, gstreamer1.0-plugins-good, systemd"
+if [[ -n "${EXTRA_DEPENDS:-}" ]]; then
+    DEPENDS="$DEPENDS, $EXTRA_DEPENDS"
+fi
 RECOMMENDS="wireplumber, gnome-shell-ubuntu-extensions"
 SUGGESTS="intel-level-zero-npu, intel-driver-compiler-npu, intel-fw-npu, v4l2loopback-dkms"
 
